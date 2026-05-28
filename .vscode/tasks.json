@@ -1,0 +1,43 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Make Build",
+            "type": "shell",
+            "command": "make",
+            "args": ["-j"],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "build"
+        },
+        {
+            "label": "make clean",
+            "type": "shell",
+            "command": "make",
+            "args": ["clean"],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "clean"
+        },
+        {
+            "label": "compile_commands.json",
+            "type": "shell",
+            "command": "bear",
+            "args": ["--","make"],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "gearate compile_commands.json"
+        },
+        {
+            "label": "flash",
+            "type": "shell",
+            "command": "make",
+            "args": ["flash"],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "flash to mcu"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+# .clang-format STM32CubeMX 默认代码风格
+BasedOnStyle: LLVM
+IndentWidth: 2                 # 核心：设置为 2 空格缩进，与 CubeMX 保持一致
+ContinuationIndentWidth: 2
+SpaceAfterCStyleCast: true
+UseTab: Never                  # 强制使用空格，不使用 Tab 制表符
+ColumnLimit: 100
+BreakBeforeBraces: Allman
+SpaceBeforeParens: ControlStatements
+ReflowComments: false
+AlignTrailingComments: false
+SortIncludes: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
