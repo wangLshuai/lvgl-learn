@@ -7,7 +7,7 @@
         // cortex-debug
         {
             "cwd": "${workspaceRoot}",
-            "executable": "./build/led.elf",
+            "executable": "./build/${workspaceFolderBasename}.elf",
             "name": "Debug with OpenOCD",
             "request": "launch",
             "type": "cortex-debug",
