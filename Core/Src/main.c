@@ -24,6 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "lcd.h"
+#include "FreeRTOS.h"
 
 /* USER CODE END Includes */
 
@@ -51,7 +53,7 @@ SRAM_HandleTypeDef hsram4;
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
-  .stack_size = 128 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
@@ -311,7 +313,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(LED_R_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
-
+  HAL_GPIO_WritePin(LCD_BLACK_LIGHT_GPIO_Port, LCD_BLACK_LIGHT_Pin, GPIO_PIN_SET);
   /* USER CODE END MX_GPIO_Init_2 */
 }
 
@@ -348,13 +350,13 @@ static void MX_FSMC_Init(void)
   hsram4.Init.AsynchronousWait = FSMC_ASYNCHRONOUS_WAIT_DISABLE;
   hsram4.Init.WriteBurst = FSMC_WRITE_BURST_DISABLE;
   /* Timing */
-  Timing.AddressSetupTime = 15;
-  Timing.AddressHoldTime = 15;
-  Timing.DataSetupTime = 255;
-  Timing.BusTurnAroundDuration = 15;
-  Timing.CLKDivision = 16;
-  Timing.DataLatency = 17;
-  Timing.AccessMode = FSMC_ACCESS_MODE_A;
+  Timing.AddressSetupTime = 2;
+  Timing.AddressHoldTime = 0;
+  Timing.DataSetupTime = 5;
+  Timing.BusTurnAroundDuration = 0;
+  Timing.CLKDivision = 0;
+  Timing.DataLatency = 0;
+  Timing.AccessMode = FSMC_ACCESS_MODE_B;
   /* ExtTiming */
 
   if (HAL_SRAM_Init(&hsram4, &Timing, NULL) != HAL_OK)
@@ -388,10 +390,35 @@ void StartDefaultTask(void *argument)
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
+  lcd_init();
+
+  Lcd_gram_scan(4);
+  lcd_clear(0, 0, 240, 320, BLACK);
   /* Infinite loop */
-  for(;;)
+  uint16_t pixel[400] = {BLUE};
+  for (int h = 0; h < 20; h++)
   {
-    osDelay(1);
+    for (uint16_t w = 0; w < 20; w++)
+    {
+      if (w >= 5 && w < 15 && h >= 5 && h < 15)
+        pixel[h * 20 + w] = RED;
+      else
+        pixel[h * 20 + w] = BLUE;
+    }
+  }
+  lcd_fulsh_window(10, 10, 20, 20, pixel);
+  // for (int x = 0; x < 240; x++)
+  // {
+  for (int y = 0; y < 200; y++)
+  {
+    lcd_set_point(50, y, BLUE);
+  }
+  lcd_clear(0, 50, 240, 1, WHITE);
+  // }
+  for (;;)
+  {
+    osDelay(pdMS_TO_TICKS(1000));
+    HAL_GPIO_TogglePin(LED_R_GPIO_Port, LED_R_Pin);
   }
   /* USER CODE END 5 */
 }
