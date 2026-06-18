@@ -26,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
 #include "FreeRTOS.h"
+#include "gui.h"
 
 /* USER CODE END Includes */
 
@@ -57,6 +58,12 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
+osThreadId_t lvgl_ui_taskHandle;
+const osThreadAttr_t LVGLUITask_attributes = {
+  .name = "LVGLUITask",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* USER CODE END PV */
 
@@ -109,7 +116,6 @@ int main(void)
   MX_FSMC_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -137,6 +143,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  lvgl_ui_taskHandle = osThreadNew(StartGUITask, NULL, &LVGLUITask_attributes);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -390,31 +397,9 @@ void StartDefaultTask(void *argument)
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
-  lcd_init();
-
-  Lcd_gram_scan(4);
-  lcd_clear(0, 0, 240, 320, BLACK);
+  /* USER CODE EN D 5 */
   /* Infinite loop */
-  uint16_t pixel[400] = {BLUE};
-  for (int h = 0; h < 20; h++)
-  {
-    for (uint16_t w = 0; w < 20; w++)
-    {
-      if (w >= 5 && w < 15 && h >= 5 && h < 15)
-        pixel[h * 20 + w] = RED;
-      else
-        pixel[h * 20 + w] = BLUE;
-    }
-  }
-  lcd_fulsh_window(10, 10, 20, 20, pixel);
-  // for (int x = 0; x < 240; x++)
-  // {
-  for (int y = 0; y < 200; y++)
-  {
-    lcd_set_point(50, y, BLUE);
-  }
-  lcd_clear(0, 50, 240, 1, WHITE);
-  // }
+
   for (;;)
   {
     osDelay(pdMS_TO_TICKS(1000));
