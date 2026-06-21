@@ -11,8 +11,12 @@ static uint8_t current_obj_index = 0;
 
 static void btn_event_cb(lv_event_t *e)
 {
+
   lv_event_code_t code = lv_event_get_code(e);
   lv_obj_t *target = lv_event_get_target_obj(e);
+  if (code != LV_EVENT_CLICKED && code != LV_EVENT_LONG_PRESSED_REPEAT)
+    return;
+
   if (code == LV_EVENT_CLICKED)
   {
     if (target == led)
@@ -209,13 +213,13 @@ void StartGUITask(void *argument)
 
   add_button = lv_button_create(boxes[0]);
   lv_obj_set_style_bg_img_src(add_button, LV_SYMBOL_PLUS, 0);
-  lv_obj_add_event(add_button, btn_event_cb, LV_EVENT_CLICKED, NULL);
+  lv_obj_add_event(add_button, btn_event_cb, LV_EVENT_ALL, NULL);
   lv_obj_set_grid_cell(add_button, LV_GRID_ALIGN_STRETCH, 0, 1, LV_GRID_ALIGN_START, 1, 1);
   lv_group_add_obj(g, add_button);
 
   del_button = lv_button_create(boxes[0]);
   lv_obj_set_style_bg_img_src(del_button, LV_SYMBOL_MINUS, 0);
-  lv_obj_add_event_cb(del_button, btn_event_cb, LV_EVENT_CLICKED, NULL);
+  lv_obj_add_event_cb(del_button, btn_event_cb, LV_EVENT_ALL, NULL);
   lv_obj_set_grid_cell(del_button, LV_GRID_ALIGN_STRETCH, 1, 1, LV_GRID_ALIGN_START, 1, 1);
   lv_group_add_obj(g, del_button);
 
