@@ -48,6 +48,7 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 
+SRAM_HandleTypeDef hsram3;
 SRAM_HandleTypeDef hsram4;
 
 /* Definitions for defaultTask */
@@ -267,8 +268,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
@@ -337,6 +338,39 @@ static void MX_FSMC_Init(void)
   /* USER CODE BEGIN FSMC_Init 1 */
 
   /* USER CODE END FSMC_Init 1 */
+
+  /** Perform the SRAM3 memory initialization sequence
+  */
+  hsram3.Instance = FSMC_NORSRAM_DEVICE;
+  hsram3.Extended = FSMC_NORSRAM_EXTENDED_DEVICE;
+  /* hsram3.Init */
+  hsram3.Init.NSBank = FSMC_NORSRAM_BANK3;
+  hsram3.Init.DataAddressMux = FSMC_DATA_ADDRESS_MUX_DISABLE;
+  hsram3.Init.MemoryType = FSMC_MEMORY_TYPE_SRAM;
+  hsram3.Init.MemoryDataWidth = FSMC_NORSRAM_MEM_BUS_WIDTH_16;
+  hsram3.Init.BurstAccessMode = FSMC_BURST_ACCESS_MODE_DISABLE;
+  hsram3.Init.WaitSignalPolarity = FSMC_WAIT_SIGNAL_POLARITY_LOW;
+  hsram3.Init.WrapMode = FSMC_WRAP_MODE_DISABLE;
+  hsram3.Init.WaitSignalActive = FSMC_WAIT_TIMING_BEFORE_WS;
+  hsram3.Init.WriteOperation = FSMC_WRITE_OPERATION_ENABLE;
+  hsram3.Init.WaitSignal = FSMC_WAIT_SIGNAL_DISABLE;
+  hsram3.Init.ExtendedMode = FSMC_EXTENDED_MODE_DISABLE;
+  hsram3.Init.AsynchronousWait = FSMC_ASYNCHRONOUS_WAIT_DISABLE;
+  hsram3.Init.WriteBurst = FSMC_WRITE_BURST_DISABLE;
+  /* Timing */
+  Timing.AddressSetupTime = 0;
+  Timing.AddressHoldTime = 15;
+  Timing.DataSetupTime = 2;
+  Timing.BusTurnAroundDuration = 15;
+  Timing.CLKDivision = 16;
+  Timing.DataLatency = 17;
+  Timing.AccessMode = FSMC_ACCESS_MODE_A;
+  /* ExtTiming */
+
+  if (HAL_SRAM_Init(&hsram3, &Timing, NULL) != HAL_OK)
+  {
+    Error_Handler( );
+  }
 
   /** Perform the SRAM4 memory initialization sequence
   */
